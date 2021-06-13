@@ -30,6 +30,11 @@
   margin-bottom: 2px;
   border-radius: 3px;
 }
+.current-tab-group-content {
+  display: flex;
+  align-items: center;
+  justify-content:space-between;
+}
 .current-tab-group {
   display: block;
   outline: none;
@@ -54,6 +59,12 @@
   color: #fff;
 }
 .saved-tab-group-trash {
+  display: inline-block;
+  height: 1.2em;
+  width: 1.2em;
+  margin-left: 3px;
+}
+.saved-tab-group-close {
   display: inline-block;
   height: 1.2em;
   width: 1.2em;
