@@ -64,6 +64,16 @@ function trashTabGroup() {
 	})
 }
 
+function closeTabGroup() {
+	let tabGroup = this.tabGroup // 参照できるように
+	chrome.tabs.query({ windowId: tabGroup.windowId }).then(tabs => {
+		let filteredTabIds = tabs.filter(tab => tab.groupId == tabGroup.id).map(tab => tab.id)
+		chrome.tabs.remove(filteredTabIds).then(() => {
+			reloadCurrentTabGroups();
+		});
+	})
+}
+
 function reloadSavedTabGroups() {
 	chrome.storage.sync.get("savedTabGroups", result => {
 		let savedTabGroupsElement = document.getElementById("saved_tab_group_contents");
@@ -77,7 +87,6 @@ function reloadSavedTabGroups() {
 			tabGroupElementContent.className = "saved-tab-group-content";
 			// 子要素 開くボタン
 			let tabGroupElement = document.createElement("button"); // これのさらに親を作成し、削除ボタンを追加する
-			// 要素に情報・動作の追加
 			tabGroupElement.className = "saved-tab-group";
 			tabGroupElement.innerHTML = savedTabGroup.title;
 			tabGroupElement.style.backgroundColor = colors[savedTabGroup.color].backgroundColor;
@@ -104,16 +113,25 @@ function reloadCurrentTabGroups() {
 			currentTabGroupsElement.removeChild( currentTabGroupsElement.firstChild );
 		}
 		currentTabGroups.forEach(currentTabGroup => {
-			// tabGroup要素の作成
+			// 親要素のtabGroup要素の作成
+			let tabGroupElementContent = document.createElement("div");
+			tabGroupElementContent.className = "current-tab-group-content";
+			// 子要素 開くボタン
 			let tabGroupElement = document.createElement("button");
-			// 要素に情報・動作の追加
 			tabGroupElement.className = 'current-tab-group';
 			tabGroupElement.innerHTML = currentTabGroup.title;
 			tabGroupElement.style.backgroundColor = colors[currentTabGroup.color].backgroundColor;
 			tabGroupElement.style.color = colors[currentTabGroup.color].color;
 			tabGroupElement.addEventListener('click', { tabGroup: currentTabGroup, handleEvent: saveTabGroup });
+			tabGroupElementContent.appendChild(tabGroupElement);
+			// 子要素 閉じるボタン
+			let tabGroupCloseElement = document.createElement("img");
+			tabGroupCloseElement.src = "./resources/close.svg";
+			tabGroupCloseElement.className = "saved-tab-group-close";
+			tabGroupCloseElement.addEventListener("click", { tabGroup: currentTabGroup, handleEvent: closeTabGroup});
+			tabGroupElementContent.appendChild(tabGroupCloseElement);
 			// tabGroup要素の追加
-			currentTabGroupsElement.appendChild(tabGroupElement);
+			currentTabGroupsElement.appendChild(tabGroupElementContent);
 		})
 	})
 }
