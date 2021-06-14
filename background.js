@@ -7,4 +7,10 @@ chrome.runtime.onInstalled.addListener(() => {
 	})
 	console.log(chrome.tabGroups.query({ windowId: chrome.windows.WINDOW_ID_CURRENT }));
 	// chrome.storage.sync.set({savedTabGroups: []})
+
+	chrome.storage.sync.get('activatesTheTabGroupWhenOpened', result => {
+		if(result.activatesTheTabGroupWhenOpened === undefined || result.activatesTheTabGroupWhenOpened === null) {
+			chrome.storage.sync.set({activatesTheTabGroupWhenOpened: false})
+		}
+	})
 });
