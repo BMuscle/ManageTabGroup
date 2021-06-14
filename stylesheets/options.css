@@ -1,0 +1,16 @@
+body {
+	margin: 30px 20px;
+}
+.option-item {
+  display: flex;
+  align-items: center;
+  justify-content:space-between;
+  width: 450px;
+}
+.option-title {
+  font-weight: 500;
+  font-size: 20px;
+  line-height: 20px;
+  height: 28px;
+  text-align: center;
+}

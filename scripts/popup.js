@@ -31,13 +31,15 @@ function openTabGroup() {
 		chrome.tabs.create({active: false, url: tabGroup.tabs[0].url}).then(createdTab => {
 			chrome.tabs.group({ tabIds: [createdTab.id] }).then(async groupId => {
 				// groupのアップデート
-				chrome.tabGroups.update(groupId, { title: tabGroup.title, color: tabGroup.color})
-				// 2つめ以降はグループに追加していく
-				for (let i = 1; i < tabGroup.tabs.length; i++) {
-					let createdTab = await chrome.tabs.create({active: false, url: tabGroup.tabs[i].url})
-					chrome.tabs.group({ groupId: groupId, tabIds: [createdTab.id] })
-				}
-				reloadCurrentTabGroups();
+				chrome.storage.sync.get('activatesTheTabGroupWhenOpened', async result => {
+					chrome.tabGroups.update(groupId, { title: tabGroup.title, color: tabGroup.color, collapsed: !result.activatesTheTabGroupWhenOpened})
+					// 2つめ以降はグループに追加していく
+					for (let i = 1; i < tabGroup.tabs.length; i++) {
+						let createdTab = await chrome.tabs.create({active: false, url: tabGroup.tabs[i].url})
+						chrome.tabs.group({ groupId: groupId, tabIds: [createdTab.id] })
+					}
+					reloadCurrentTabGroups();
+				})
 			})
 		})
 	}
